@@ -54,26 +54,22 @@
                     </div>
                     <div class="card-body">
                         <form>
-                            <!-- Train Name -->
                             <div class="form-group row">
                                 <label for="train-name">Train Name</label>
                                 <input class="form-control" id="name-input" type="text">
                             </div>
-                            <!-- Destination -->
                             <div class="form-group row">
                                 <label for="destination">Destination</label>
                                 <input class="form-control" id="destination-input" type="text">
                             </div>
                         </form>
                         <form>
-                            <!-- First Arrival -->
                             <div class="form-group row">
                                 <label for="first-time">First Train Time (HH:mm - military time)</label>
                                 <input class="form-control" id="first-input" type="text">
                             </div>
-                            <!-- Frequency -->
                             <div class="form-group row">
-                                <label for="frequency">Frequency (min)</label>
+                                <label for="frequency">Frequency</label>
                                 <input class="form-control" id="frequency-input" type="text">
                             </div>
                             <button class="btn btn-primary" id="submit-info" type="submit">Submit</button>
@@ -88,8 +84,66 @@
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
     <!-- Specific Firebase products we want (Database) -->
     <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
-    <script src="assets/javascript/javascript.js"></script> 
-    
+    <script>
+
+        let firebaseConfig = {
+            apiKey: "AIzaSyBclIdAvpb1w4NqLP2o9kFHloYEHURh-XY",
+            databaseURL: "https://train-homework-445a6.firebaseio.com",
+
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        let database = firebase.database();
+
+        $("#submit-info").on("click", function () {
+            event.preventDefault();
+
+            let trainName = $("#name-input").val().trim();
+            let trainDestination = $("#destination-input").val().trim();
+            let firstTrain = $("#first-input").val().trim();
+            let trainFrequency = $("#frequency-input").val().trim();
+
+            database.ref().push({
+                name: trainName,
+                destination: trainDestination,
+                firstTrain: firstTrain,
+                frequency: trainFrequency
+            });
+
+            $("#name-input").val("");
+            $("#destination-input").val("");
+            $("#first-input").val("");
+            $("#frequency-input").val("");
+
+        });
+
+        database.ref().on("child_added", function (snapshot) {
+            let name = snapshot.val().name
+            let destination = snapshot.val().destination
+            let firstArrival = snapshot.val().firstTrain
+            let frequency = snapshot.val().frequency
+
+            let newRow = $("#trainInfo")
+
+            // Change the HTML to reflect
+            let thName = $("<th>").attr("scope", "row").text(name);
+            newRow.append(thName);
+
+            let tdDestination = $("<td>").text(destination);
+            newRow.append(tdDestination);
+
+            let tdFirst = $("<td>").text(firstArrival);
+            newRow.append(tdFirst);
+
+            let tdFrequency = $("<td>").text(frequency);
+            newRow.append(tdFrequency);
+
+            // Handle the errors
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+        });
+    </script> ​
 </body>
 
 </html>
