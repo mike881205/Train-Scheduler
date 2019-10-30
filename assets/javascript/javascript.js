@@ -8,7 +8,6 @@ firebase.initializeApp(firebaseConfig);
 
 let database = firebase.database();
 
-
 $("#submit-info").on("click", function () {
     event.preventDefault();
 
@@ -32,6 +31,7 @@ $("#submit-info").on("click", function () {
 });
 
 database.ref().on("child_added", function (snapshot) {
+
     let name = snapshot.val().name
     let destination = snapshot.val().destination
     let firstTrain = snapshot.val().first
